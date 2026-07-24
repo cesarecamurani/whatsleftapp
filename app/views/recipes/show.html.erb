@@ -1,0 +1,141 @@
+<% total_time = [@recipe.prep_time, @recipe.cook_time].compact.sum %>
+<% from_search = @ingredients.any? %>
+
+<main class="page">
+  <p class="recipe-show-back">
+    <% if from_search %>
+      <%= link_to "Back to search", search_path(
+            ingredients: params[:ingredients],
+            page: params[:page]
+          ) %>
+    <% else %>
+      <%= link_to "Back to browse", recipes_path(
+            category: params[:category],
+            rating: params[:rating],
+            page: params[:page]
+          ) %>
+    <% end %>
+  </p>
+
+  <article class="recipe-show">
+    <header class="recipe-show-header">
+      <h1 class="recipe-show-title"><%= @recipe.title %></h1>
+    </header>
+
+    <% if @recipe.image_url.present? %>
+      <div class="recipe-show__image-frame" data-controller="image-fallback">
+        <%= image_tag @recipe.image_url,
+                      class: "recipe-show__image",
+                      loading: "lazy",
+                      alt: @recipe.title,
+                      data: { action: "error->image-fallback#show" } %>
+        <div class="recipe-card__image-placeholder">No image available</div>
+      </div>
+    <% else %>
+      <div class="recipe-card__image-placeholder">No image available</div>
+    <% end %>
+
+    <% has_match_meta = @match.present? %>
+    <% has_detail_meta = @recipe.rating.present? || @recipe.prep_time.present? || @recipe.cook_time.present? || total_time.positive? %>
+
+    <div class="recipe-show-body">
+    <% if has_match_meta %>
+      <dl class="recipe-card-meta">
+        <% unless @match.coverage_ratio.nil? %>
+          <div class="recipe-card-meta-item recipe-card-meta-item--match">
+            <dt>Ingredient match:</dt>
+            <dd><%= number_to_percentage(@match.coverage_ratio.to_f * 100, precision: 0) %> ingredient match</dd>
+          </div>
+        <% end %>
+
+        <% if @match.matched_terms.present? %>
+          <div class="recipe-card-meta-item recipe-card-meta-item--matched">
+            <dt>Matched search ingredients:</dt>
+            <dd><%= @match.matched_terms.join(", ") %></dd>
+          </div>
+        <% end %>
+
+        <% if @match.unmatched_search_terms.any? %>
+          <div class="recipe-card-meta-item recipe-card-meta-item--unused">
+            <dt>Unused search ingredients:</dt>
+            <dd><%= @match.unmatched_search_terms.join(", ") %></dd>
+          </div>
+        <% end %>
+      </dl>
+    <% end %>
+
+    <% if @match&.missing_recipe_ingredients&.any? %>
+      <% visible_ingredients = @match.missing_recipe_ingredients.first(RecipesHelper::MISSING_INGREDIENTS_PREVIEW_LIMIT) %>
+      <% additional_ingredients = @match.missing_recipe_ingredients.drop(RecipesHelper::MISSING_INGREDIENTS_PREVIEW_LIMIT) %>
+      <section class="recipe-card-ingredients recipe-show-needed" aria-label="Ingredients you may still need">
+        <h2 class="recipe-card-ingredients-heading">You may still need</h2>
+
+        <ul class="recipe-card-ingredients-list">
+          <% visible_ingredients.each do |ingredient| %>
+            <li><%= ingredient.ingredient_text %></li>
+          <% end %>
+        </ul>
+
+        <% if additional_ingredients.any? %>
+          <details class="recipe-card-ingredients-more">
+            <summary>
+              <span class="recipe-card-ingredients-more-show">Show <%= additional_ingredients.size %> more</span>
+              <span class="recipe-card-ingredients-more-hide">Hide additional ingredients</span>
+            </summary>
+
+            <ul class="recipe-card-ingredients-list">
+              <% additional_ingredients.each do |ingredient| %>
+                <li><%= ingredient.ingredient_text %></li>
+              <% end %>
+            </ul>
+          </details>
+        <% end %>
+      </section>
+    <% end %>
+
+    <% if has_detail_meta %>
+      <dl class="recipe-card-meta<%= " recipe-show-details" if has_match_meta %>">
+        <% if @recipe.rating.present? %>
+          <div class="recipe-card-meta-item">
+            <dt>Rating</dt>
+            <dd><%= number_with_precision(@recipe.rating, precision: 1) %></dd>
+          </div>
+        <% end %>
+
+        <% if @recipe.prep_time.present? %>
+          <div class="recipe-card-meta-item">
+            <dt>Preparation time</dt>
+            <dd><%= @recipe.prep_time %> min</dd>
+          </div>
+        <% end %>
+
+        <% if @recipe.cook_time.present? %>
+          <div class="recipe-card-meta-item">
+            <dt>Cooking time</dt>
+            <dd><%= @recipe.cook_time %> min</dd>
+          </div>
+        <% end %>
+
+        <% if total_time.positive? %>
+          <div class="recipe-card-meta-item">
+            <dt>Total time</dt>
+            <dd><%= total_time %> min</dd>
+          </div>
+        <% end %>
+      </dl>
+    <% end %>
+
+    <% if @recipe.recipe_ingredients.any? %>
+      <section class="recipe-card-ingredients" aria-label="Ingredients">
+        <h2 class="recipe-card-ingredients-heading">Ingredients</h2>
+
+        <ul class="recipe-card-ingredients-list">
+          <% @recipe.recipe_ingredients.each do |ingredient| %>
+            <li><%= ingredient.ingredient_text %></li>
+          <% end %>
+        </ul>
+      </section>
+    <% end %>
+    </div>
+  </article>
+</main>

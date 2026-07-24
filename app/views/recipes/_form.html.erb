@@ -1,0 +1,52 @@
+<%= form_with url: search_path,
+              method: :get,
+              class: "search-form",
+              data: {
+                controller: "ingredient-chips",
+                ingredient_chips_ingredients_value: @ingredients.to_json,
+                ingredient_chips_max_ingredients_value: max_ingredients,
+                ingredient_chips_min_ingredient_length_value: min_ingredient_length,
+                ingredient_chips_max_ingredient_length_value: max_ingredient_length,
+                action: "submit->ingredient-chips#submit"
+              } do %>
+  <div class="search-form-field">
+    <label for="ingredient-input" class="search-form-label">Ingredients</label>
+
+    <div class="chip-input">
+      <div class="chip-list" data-ingredient-chips-target="chipList" aria-live="polite"></div>
+      <input
+        id="ingredient-input"
+        type="text"
+        name="ingredients[]"
+        class="chip-input-field"
+        placeholder="Type an ingredient and press Enter"
+        autocomplete="off"
+        minlength="<%= min_ingredient_length %>"
+        maxlength="<%= max_ingredient_length %>"
+        data-ingredient-chips-target="input"
+        data-action="keydown->ingredient-chips#keydown input->ingredient-chips#input paste->ingredient-chips#paste">
+    </div>
+
+    <p class="search-form-hint">
+      Use at least <%= min_ingredient_length %> characters per ingredient.
+      Press Enter or comma to add each one.
+      Paste comma-separated or line-separated lists.
+    </p>
+  </div>
+
+  <div data-ingredient-chips-target="hiddenContainer" hidden></div>
+
+  <div class="search-form-actions">
+    <button type="submit" class="search-form-submit">
+      Match recipes
+    </button>
+
+    <button type="button"
+            class="search-form-clear"
+            data-ingredient-chips-target="clearButton"
+            data-action="ingredient-chips#clear"
+            hidden>
+      Clear
+    </button>
+  </div>
+<% end %>

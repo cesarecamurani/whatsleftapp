@@ -1,0 +1,30 @@
+<main class="page">
+  <p class="page-home-link"><%= link_to "Home", root_path %></p>
+
+  <header class="page-header">
+    <h1>Match recipes</h1>
+    <p class="page-intro">Enter the ingredients you have at home and we&rsquo;ll find recipes you can make!</p>
+  </header>
+
+  <%= render "form" %>
+
+  <% if @search_submitted && @ingredients.any? %>
+    <section class="results" aria-label="Search results">
+      <h2 class="results-heading"><%= pluralize(@total_count, "recipe") %> found</h2>
+
+      <% if @recipes.any? %>
+        <ol class="recipe-list">
+          <%= render partial: "recipe",
+                     collection: @recipes.map { |match| RecipeCard.for_search(match) },
+                     as: :card %>
+        </ol>
+
+        <%= render "pagination", page: @page, ingredients: @ingredients, total_count: @total_count %>
+      <% elsif @total_count.positive? %>
+        <p class="empty-state">No recipes on this page.</p>
+      <% else %>
+        <p class="empty-state">No recipes matched those ingredients. Try removing one or using a broader term, such as &ldquo;tomato&rdquo; instead of &ldquo;cherry tomatoes&rdquo;.</p>
+      <% end %>
+    </section>
+  <% end %>
+</main>

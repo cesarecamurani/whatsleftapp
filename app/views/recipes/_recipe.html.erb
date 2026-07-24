@@ -1,0 +1,90 @@
+<li class="recipe-card">
+  <% if card.image_url.present? %>
+    <div class="recipe-card__image-frame" data-controller="image-fallback">
+      <%= image_tag card.image_url,
+                    class: "recipe-card__image",
+                    loading: "lazy",
+                    alt: "",
+                    data: { action: "error->image-fallback#show" } %>
+      <div class="recipe-card__image-placeholder">No image available</div>
+    </div>
+  <% else %>
+    <div class="recipe-card__image-placeholder">No image available</div>
+  <% end %>
+  <div class="recipe-card-body">
+    <h3 class="recipe-card-title"><%= card.title %></h3>
+    <%= link_to "", recipe_path(
+          card.id,
+          ingredients: @ingredients,
+          page: @page,
+          category: @selected_category,
+          rating: @selected_rating
+        ), class: "recipe-card-link", "aria-label": card.title %>
+    <dl class="recipe-card-meta">
+      <% if card.rating.present? %>
+        <div class="recipe-card-meta-item">
+          <dt>Rating</dt>
+          <dd><%= number_with_precision(card.rating, precision: 1) %></dd>
+        </div>
+      <% end %>
+      <% if card.coverage_ratio.present? %>
+        <div class="recipe-card-meta-item recipe-card-meta-item--match">
+          <dt>Ingredient match:</dt>
+          <dd><%= number_to_percentage(card.coverage_ratio.to_f * 100, precision: 0) %> ingredient match</dd>
+        </div>
+      <% end %>
+      <% if card.matched_terms.present? %>
+        <div class="recipe-card-meta-item recipe-card-meta-item--matched">
+          <dt>Matched search ingredients:</dt>
+          <dd><%= card.matched_terms.to_a.join(", ") %></dd>
+        </div>
+      <% end %>
+      <% if card.unmatched_search_terms.any? %>
+        <div class="recipe-card-meta-item recipe-card-meta-item--unused">
+          <dt>Unused search ingredients:</dt>
+          <dd><%= card.unmatched_search_terms.join(", ") %></dd>
+        </div>
+      <% end %>
+      <% if card.missing_recipe_ingredients.any? %>
+        <% visible_ingredients = card.missing_recipe_ingredients.first(RecipesHelper::MISSING_INGREDIENTS_PREVIEW_LIMIT) %>
+        <% additional_ingredients = card.missing_recipe_ingredients.drop(RecipesHelper::MISSING_INGREDIENTS_PREVIEW_LIMIT) %>
+        <div class="recipe-card-meta-item recipe-card-meta-item--needed">
+          <dt>You may still need:</dt>
+          <dd class="recipe-card-needed-ingredients">
+            <ul class="recipe-card-ingredients-list">
+              <% visible_ingredients.each do |ingredient| %>
+                <li><%= ingredient.ingredient_text %></li>
+              <% end %>
+            </ul>
+
+            <% if additional_ingredients.any? %>
+              <details class="recipe-card-ingredients-more">
+                <summary>
+                  <span class="recipe-card-ingredients-more-show">Show <%= additional_ingredients.size %> more</span>
+                  <span class="recipe-card-ingredients-more-hide">Hide additional ingredients</span>
+                </summary>
+
+                <ul class="recipe-card-ingredients-list">
+                  <% additional_ingredients.each do |ingredient| %>
+                    <li><%= ingredient.ingredient_text %></li>
+                  <% end %>
+                </ul>
+              </details>
+            <% end %>
+          </dd>
+        </div>
+      <% end %>
+    </dl>
+    <% if card.recipe_ingredients.any? %>
+      <section class="recipe-card-ingredients" aria-label="Ingredients">
+        <h2 class="recipe-card-ingredients-heading">Ingredients</h2>
+
+        <ul class="recipe-card-ingredients-list">
+          <% card.recipe_ingredients.each do |ingredient| %>
+            <li><%= ingredient.ingredient_text %></li>
+          <% end %>
+        </ul>
+      </section>
+    <% end %>
+  </div>
+</li>
