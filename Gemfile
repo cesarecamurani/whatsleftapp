@@ -12,10 +12,6 @@ gem "propshaft"
 gem "turbo-rails"
 gem "stimulus-rails"
 
-# Background jobs / caching (Rails defaults)
-gem "solid_cache"
-gem "solid_queue"
-
 # Boot performance
 gem "bootsnap", require: false
 
