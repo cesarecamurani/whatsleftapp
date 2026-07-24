@@ -1,0 +1,59 @@
+<main class="page">
+  <p class="page-home-link"><%= link_to "Home", root_path %></p>
+
+  <header class="page-header">
+    <h1>Browse recipes</h1>
+    <p class="page-intro">Explore the full catalogue and filter by category or rating.</p>
+  </header>
+
+  <%= form_with url: recipes_path, method: :get, class: "browse-filters", local: true do %>
+    <div class="browse-filters__fields">
+      <div class="browse-filters__field">
+        <label class="browse-filters__label" for="category">Category</label>
+        <%= select_tag :category,
+                       options_for_select(recipe_category_options(@categories), params[:category]),
+                       include_blank: "All categories",
+                       id: "category",
+                       class: "browse-filters__select" %>
+      </div>
+
+      <div class="browse-filters__field">
+        <label class="browse-filters__label" for="rating">Rating</label>
+        <%= select_tag :rating, options_for_select(recipe_rating_options, @selected_rating),
+                       id: "rating",
+                       class: "browse-filters__select" %>
+      </div>
+    </div>
+
+    <div class="browse-filters__actions">
+      <%= submit_tag "Apply filters", class: "search-form-submit", name: nil %>
+
+      <% if @selected_category || @selected_rating %>
+        <%= link_to "Clear", recipes_path, class: "search-form-clear" %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <section class="results" aria-label="Browse results">
+    <% if @recipes.any? %>
+      <ol class="recipe-list">
+        <%= render partial: "recipe",
+                   collection: @recipes.map { |recipe| RecipeCard.for_browse(recipe) },
+                   as: :card %>
+      </ol>
+
+      <%= render "pagination",
+                 page: @page,
+                 total_count: @total_count,
+                 url_for_page: ->(page_number) {
+                   recipes_path(
+                     category: @selected_category,
+                     rating: @selected_rating,
+                     page: page_number
+                   )
+                 } %>
+    <% else %>
+      <p class="empty-state">No recipes matched those filters. Try a different category or rating.</p>
+    <% end %>
+  </section>
+</main>

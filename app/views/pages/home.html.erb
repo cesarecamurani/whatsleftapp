@@ -1,0 +1,16 @@
+<main class="page">
+  <header class="page-header page-header--home">
+    <h1>Find your next recipe</h1>
+    <p class="page-intro">Choose how you want to find your next recipe.</p>
+  </header>
+  <div class="home-choices">
+    <%= link_to search_path, class: "home-choice" do %>
+      <span class="home-choice__title">Match recipes</span>
+      <span class="home-choice__text">Find recipes from the ingredients you have at home.</span>
+    <% end %>
+    <%= link_to recipes_path, class: "home-choice" do %>
+      <span class="home-choice__title">Browse recipes</span>
+      <span class="home-choice__text">Explore the catalogue and filter by category or rating.</span>
+    <% end %>
+  </div>
+</main>
