@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Recipe Finder" %></title>
+    <title><%= content_for(:title) || "WhatsLeftApp" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -23,6 +23,18 @@
   </head>
 
   <body>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <%= link_to "WhatsLeftApp", root_path, class: "site-header__brand" %>
+      </div>
+    </header>
+
     <%= yield %>
+
+    <footer class="site-footer">
+      <div class="site-footer__inner">
+        <p class="site-footer__text">&copy; <%= Date.current.year %> WhatsLeftApp</p>
+      </div>
+    </footer>
   </body>
 </html>

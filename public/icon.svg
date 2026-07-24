@@ -1,3 +1,30 @@
-<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="256" cy="256" r="256" fill="red"/>
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="512"
+  height="512"
+  viewBox="0 0 512 512"
+>
+  <circle cx="256" cy="256" r="240" fill="#5e81ac"/>
+
+  <path
+    d="M152 246h208v58c0 72-43 118-104 118s-104-46-104-118z"
+    fill="#eceff4"
+  />
+  <rect x="112" y="268" width="56" height="46" rx="23" fill="#ebcb8b"/>
+  <rect x="344" y="268" width="56" height="46" rx="23" fill="#ebcb8b"/>
+
+  <path
+    d="M176 230c8-48 37-76 80-76s72 28 80 76z"
+    fill="#d8dee9"
+  />
+  <rect x="136" y="224" width="240" height="32" rx="16" fill="#eceff4"/>
+  <rect x="236" y="124" width="40" height="42" rx="20" fill="#ebcb8b"/>
+
+  <path
+    d="M210 116c-18-20 14-30 0-50M256 106c-18-20 14-30 0-50M302 116c-18-20 14-30 0-50"
+    fill="none"
+    stroke="#eceff4"
+    stroke-linecap="round"
+    stroke-width="14"
+  />
 </svg>
