@@ -3,7 +3,7 @@ source "https://rubygems.org"
 ruby "3.3.5"
 
 gem "rails", "~> 8.0.5"
-gem "pg", "~> 1.1"
+gem "pg", "~> 1.7"
 gem "puma", ">= 5.0"
 
 # Frontend
